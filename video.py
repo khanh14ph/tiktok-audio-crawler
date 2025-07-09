@@ -2,7 +2,7 @@
 from TikTokApi import TikTokApi
 import asyncio
 import os
-
+from moviepy import VideoFileClip
 ms_token = "OosMHDsuRy3tqoM5W18QBtLYIZwVL9aqVduIkA5vyxu7F8eHh6d-L8M_zeqlwnOxL0muV-ScTZ_cNQux_Qjks_7tEu8f-he_pUE92eu9hZrlMXqfqwrt-rwrNqIRHZvX8upblOeZcFfLfj2NBKdVqD6ffg=="
 from tqdm import tqdm
 from glob import glob
@@ -23,13 +23,22 @@ async def get_video_example(channel_name, video_id):
 
 
         video_info = await video.info()  # is HTML request, so avoid using this too much
-        print(video_info)
         video_bytes = await video.bytes()
         os.makedirs(f"downloads/{channel_name}",exist_ok=True)
-        with open(f"downloads/{channel_name}/{video_id}.mp4", "wb") as f:
+        video_path = f"downloads/{channel_name}/{video_id}.mp4"
+        with open(video_path, "wb") as f:
             f.write(video_bytes)
+
+        # Extract audio and save as FLAC
+        video_clip = VideoFileClip(video_path)
+        audio_path = f"downloads/{channel_name}/{video_id}.flac"
+        video_clip.audio.write_audiofile(audio_path, codec='flac', fps=16000)
+
+        # Clean up the video file if needed
+        video_clip.close()
+        os.remove(video_path)
 
 
 if __name__ == "__main__":
-    for i in tqdm(result):
+    for i in tqdm(result[0:10]):
         asyncio.run(get_video_example(channel_name=i[0], video_id=i[1]))
