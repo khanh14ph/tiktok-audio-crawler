@@ -3,7 +3,7 @@ from TikTokApi import TikTokApi
 import asyncio
 import os
 from moviepy import VideoFileClip
-ms_token = "OosMHDsuRy3tqoM5W18QBtLYIZwVL9aqVduIkA5vyxu7F8eHh6d-L8M_zeqlwnOxL0muV-ScTZ_cNQux_Qjks_7tEu8f-he_pUE92eu9hZrlMXqfqwrt-rwrNqIRHZvX8upblOeZcFfLfj2NBKdVqD6ffg=="
+ms_token = "P8nyrxjmfGXMx5ov8Iae8PaHVjPkZUe4jTC7QvJmQdi6uEZSS7RmvF2pNS-u6lUZPCZawi9GTb-r9HM564p0be0sSMEbN3oiNsQvKe1tV8U355mlPh_gI1LtcPlGGPpn17Xw94oJcupbHu6MazML"
 from tqdm import tqdm
 from glob import glob
 lst=glob("resources/channel_video/*.txt")
@@ -40,5 +40,8 @@ async def get_video_example(channel_name, video_id):
 
 
 if __name__ == "__main__":
-    for i in tqdm(result[0:10]):
+    import time
+    s=time.time()
+    for i in tqdm(result[0:100]):
         asyncio.run(get_video_example(channel_name=i[0], video_id=i[1]))
+    print(time.time()-s)
